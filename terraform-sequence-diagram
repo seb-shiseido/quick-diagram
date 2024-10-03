@@ -1,0 +1,34 @@
+sequenceDiagram
+    participant User
+    participant Terraform
+    participant CloudProvider
+    participant DeploymentManager
+    participant TrainingPipeline
+    participant InferenceEngine
+
+    User->>+Terraform: Initiate Configuration
+    loop Selection Loop
+        User->>Terraform: Select Cloud Provider
+        Terraform->>+CloudProvider: Initialize Configuration
+        CloudProvider-->>-Terraform: Confirm Configuration
+    end
+
+    Terraform->>+DeploymentManager: Deploy Resources
+    DeploymentManager->>+CloudProvider: Provision Infrastructure
+    CloudProvider-->>-DeploymentManager: Infrastructure Ready
+    DeploymentManager-->>-Terraform: Deployment Complete
+
+    Terraform->>+TrainingPipeline: Start Training Pipeline
+    TrainingPipeline->>+CloudProvider: Request Compute Resources
+    CloudProvider-->>-TrainingPipeline: Compute Resources Allocated
+    TrainingPipeline->>TrainingPipeline: Execute Training
+    TrainingPipeline->>TrainingPipeline: Log Activities
+    TrainingPipeline->>+TrainingPipeline: Store Model Artifact
+    TrainingPipeline-->>-Terraform: Training Complete
+
+    Terraform->>+InferenceEngine: Initiate Inference
+    InferenceEngine->>+CloudProvider: Load Model
+    CloudProvider-->>-InferenceEngine: Model Loaded
+    InferenceEngine->>InferenceEngine: Perform Inference
+    InferenceEngine->>InferenceEngine: Log Results
+    InferenceEngine-->>-User: Display Prediction Results
