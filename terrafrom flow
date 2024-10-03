@@ -1,0 +1,86 @@
+---
+title: SJ IaC pipeline Diagram
+---
+stateDiagram-v2
+
+Terraform --> Cloud_Provider_Base_configs 
+Terraform: Terraform Init (Set Cloud)
+
+    Cloud_Provider_Base_configs: Cloud Provider Pipeline Creation
+    state Cloud_Provider_Base_configs {
+        
+        GCP: GCP Resources
+        state GCP {
+            [*] --> Env_Config1
+            Env_Config1 --> Credentials1
+            Env_Config1 --> Provider1
+
+            Provider1 --> Compute1
+            Provider1 --> Storage1
+            Provider1 --> BigQuery1
+
+            Env_Config1: Environment Config GCP
+            Credentials1: GCP Credentials
+            Provider1: GCP Provider Setup
+            Compute1: Compute Engine Instances
+            Storage1: Cloud Storage Buckets
+            BigQuery1: BigQuery Datasets and Tables
+        }
+
+        AWS: AWS Resources
+        state AWS {
+            [*] --> Env_Config
+            Env_Config --> Credentials
+            Env_Config --> Provider
+
+            Provider --> EC2
+            Provider --> S3
+            Provider --> RDS
+            Provider --> DynamoDB
+            
+
+            Env_Config: Environment Config AWS
+            Credentials: AWS Credentials
+            Provider: AWS Provider Setup
+            EC2: EC2 Instances
+            S3: S3 Buckets
+            RDS: RDS Instances
+            DynamoDB: DynamoDB Tables
+        }
+
+        Azure: Azure Resources
+        state Azure {
+            [*]--> []
+            [] --> [*]
+        }
+
+
+        state Etc {
+            [...]
+            
+        }
+
+    }
+    Cloud_Provider_Base_configs --> Run
+    Run: Run Terraform pipeline for training
+    state Run {
+        train: Train / Test / Validation
+        train --> mlflow
+        mlflow: ML Flow Logging
+        mlflow --> arte
+        arte: Artefact / Model Storage
+        arte --> deploy
+
+    }
+
+    Cloud_Provider_Base_configs --> inf
+    inf: Inference
+    state inf {
+        train1: Load Artefact / Model
+        train1 --> mlflow1
+        mlflow1: ML Flow Logging
+        mlflow1 --> arte1
+        arte1: Outputs / Prediction
+    }
+
+  
