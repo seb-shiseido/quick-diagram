@@ -21,14 +21,15 @@ sequenceDiagram
     Terraform->>+TrainingPipeline: Start Training Pipeline
     TrainingPipeline->>+CloudProvider: Request Compute Resources
     CloudProvider-->>-TrainingPipeline: Compute Resources Allocated
-    TrainingPipeline->>TrainingPipeline: Execute Training
-    TrainingPipeline->>TrainingPipeline: Log Activities
-    TrainingPipeline->>+TrainingPipeline: Store Model Artifact
+    TrainingPipeline->>TrainingPipeline: Execute Training / Parameter tuning
+    TrainingPipeline->>TrainingPipeline: Log Activities (ML-FLow)
+    TrainingPipeline->>CloudProvider: Store Model Artifact
     TrainingPipeline-->>-Terraform: Training Complete
 
     Terraform->>+InferenceEngine: Initiate Inference
     InferenceEngine->>+CloudProvider: Load Model
     CloudProvider-->>-InferenceEngine: Model Loaded
     InferenceEngine->>InferenceEngine: Perform Inference
-    InferenceEngine->>InferenceEngine: Log Results
+    InferenceEngine->>InferenceEngine: Log Results (ML-FLow)
+    InferenceEngine->>CloudProvider: Save Prediction Results
     InferenceEngine-->>-User: Display Prediction Results
