@@ -1,0 +1,40 @@
+sequenceDiagram
+    participant User
+    participant Terraform
+
+
+
+    User->>+Terraform: Initiate Terraform
+
+        User->>+GCP: Select GCP
+        Terraform->>+GCP: Initialize Configuration
+        GCP->>+GCP: Setup Environment
+        GCP->>GCP: Configure Credentials
+        GCP->>GCP: Setup Provider
+        GCP->>GCP: Configure Compute Resources
+        GCP->>GCP: Configure Storage
+        GCP->>GCP: Configure BigQuery
+        GCP-->>-Terraform: GCP Configuration Complete
+
+        destroy GCP
+        User-xGCP: Configuration complete
+    
+
+    create participant AWS
+
+        User->>+AWS: Select AWS
+        
+        Terraform->>+AWS: Initialize Configuration
+        
+        AWS->>+AWS: Setup Environment
+        AWS->>AWS: Configure Credentials
+        AWS->>AWS: Setup Provider
+        AWS->>AWS: Configure EC2 Instances
+        AWS->>AWS: Configure S3 Buckets
+        AWS->>AWS: Configure RDS Instances
+        AWS->>AWS: Configure DynamoDB
+        AWS-->>-Terraform: AWS Configuration Complete
+        destroy AWS
+        User-xAWS: Configuration complete
+
+    
